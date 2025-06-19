@@ -1,4 +1,4 @@
-# Instagram Unfollowers Checker - Website
+# Simple Instagram Unfollowers Checker
 
 Website modern untuk mengecek unfollowers Instagram dengan interface yang user-friendly dan fitur drag & drop.
 
