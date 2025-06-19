@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Unfollowers Checker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .file-input-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .file-input {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .file-input label {
+            display: block;
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .file-input label:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .file-input input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .stat-card.followers {
+            border-left-color: #28a745;
+        }
+
+        .stat-card.following {
+            border-left-color: #007bff;
+        }
+
+        .stat-card.mutual {
+            border-left-color: #ffc107;
+        }
+
+        .stat-card.unfollowers {
+            border-left-color: #dc3545;
+        }
+
+        .stat-card.not-following {
+            border-left-color: #6f42c1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lists-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .list-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .list-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .list-card.unfollowers h3 {
+            color: #dc3545;
+        }
+
+        .list-card.mutual h3 {
+            color: #28a745;
+        }
+
+        .list-card.not-following h3 {
+            color: #6f42c1;
+        }
+
+        .username-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .username-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .username-item:last-child {
+            border-bottom: none;
+        }
+
+        .username-item:hover {
+            background: #f8f9fa;
+        }
+
+        .username {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .file-input-group {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .lists-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fab fa-instagram"></i> Instagram Unfollowers Checker</h1>
+            <p>Deteksi akun warga seleb yang tidak followback dengan mudah dan cepat</p>
+            <div style="margin-top: 20px;">
+                <a href="tutorial.html" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 25px; text-decoration: none; transition: all 0.3s ease; display: inline-block;">
+                    <i class="fas fa-graduation-cap"></i> Lihat Tutorial
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2><i class="fas fa-upload"></i> Upload File JSON Instagram</h2>
+                <div class="file-input-group">
+                    <div class="file-input">
+                        <label for="followersFile">
+                            <i class="fas fa-users"></i> Upload Followers JSON
+                        </label>
+                        <input type="file" id="followersFile" accept=".json">
+                        <div class="file-name" id="followersFileName"></div>
+                    </div>
+                    <div class="file-input">
+                        <label for="followingFile">
+                            <i class="fas fa-user-plus"></i> Upload Following JSON
+                        </label>
+                        <input type="file" id="followingFile" accept=".json">
+                        <div class="file-name" id="followingFileName"></div>
+                    </div>
+                </div>
+                <button class="analyze-btn" id="analyzeBtn" disabled>
+                    <i class="fas fa-search"></i> Analisis Unfollowers
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Sedang menganalisis data sabar bentar nyet...</p>
+            </div>
+
+            <div class="results" id="results">
+                <div class="stats-grid">
+                    <div class="stat-card followers">
+                        <div class="stat-number" id="totalFollowers">0</div>
+                        <div class="stat-label">Total Followers</div>
+                    </div>
+                    <div class="stat-card following">
+                        <div class="stat-number" id="totalFollowing">0</div>
+                        <div class="stat-label">Total Following</div>
+                    </div>
+                    <div class="stat-card mutual">
+                        <div class="stat-number" id="totalMutual">0</div>
+                        <div class="stat-label">Mutual Followers</div>
+                    </div>
+                    <div class="stat-card unfollowers">
+                        <div class="stat-number" id="totalUnfollowers">0</div>
+                        <div class="stat-label">Tidak FollowBack</div>
+                    </div>
+                    <div class="stat-card not-following">
+                        <div class="stat-number" id="totalNotFollowing">0</div>
+                        <div class="stat-label">Semua Riwayat Unfollowers</div>
+                    </div>
+                </div>
+
+                <div class="lists-section">
+                    <div class="list-card unfollowers">
+                        <h3><i class="fas fa-times-circle"></i> Tidak FollowBack</h3>
+                        <div class="username-list" id="unfollowersList"></div>
+                    </div>
+                    <div class="list-card mutual">
+                        <h3><i class="fas fa-handshake"></i> Mutual Followers</h3>
+                        <div class="username-list" id="mutualList"></div>
+                    </div>
+                    <div class="list-card not-following">
+                        <h3><i class="fas fa-heart-broken"></i> Semua Riwayat Unfollowers</h3>
+                        <div class="username-list" id="notFollowingList"></div>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <button class="export-btn" id="exportJson">
+                        <i class="fas fa-download"></i> Export JSON
+                    </button>
+                    <button class="export-btn" id="exportCsv">
+                        <i class="fas fa-file-csv"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="contact-section" style="margin-top: 50px; background: #f8f9fa; border-radius: 15px; padding: 30px; text-align: center;">
+                <h2 style="color: #333; margin-bottom: 20px;">
+                    <i class="fab fa-whatsapp"></i> Butuh Bantuan?
+                </h2>
+                <p style="color: #666; margin-bottom: 25px; font-size: 1.1rem;">
+                    Jika Anda mengalami kendala atau memiliki pertanyaan, jangan ragu untuk menghubungi admin kami melalui WhatsApp
+                </p>
+                
+                <div class="contact-cards" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
+                    <div class="contact-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-width: 200px;">
+                        <div style="color: #25D366; font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h4 style="color: #333; margin-bottom: 10px;">Tpk</h4>
+                        <p style="color: #666; margin-bottom: 15px;">Untuk pertanyaan umum, bantuan teknis dan troubleshooting</p>
+                        <a href="https://wa.me/6281242818675?text=Kiw, saya butuh bantuan untuk Instagram Unfollowers Checker" 
+                           target="_blank" 
+                           style="background: #25D366; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                            <i class="fab fa-whatsapp"></i> Chat WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info" style="background: white; border-radius: 10px; padding: 20px; max-width: 600px; margin: 0 auto;">
+                    <h4 style="color: #333; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle"></i> Penting
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: left;">
+                        <div>
+                            <strong style="color: #333;">Response Time:</strong><br>
+                            <span style="color: #666;">Kalau aktif pasti di respon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="whatsapp-fixed" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000;">
+                <a href="https://wa.me/6281242818675?text=Kiw, saya butuh bantuan untuk Instagram Unfollowers Checker" 
+                   target="_blank" 
+                   style="background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s ease; font-size: 1.5rem;">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; margin-top: 30px;">
+            <p style="margin: 0; font-size: 1rem; opacity: 0.9;">
+                <i class="fas fa-code"></i> Develop by <strong>Tpk</strong>
+            </p>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

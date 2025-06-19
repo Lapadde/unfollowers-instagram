@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial - Cara Download Data Instagram JSON</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-buttons {
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .step-container {
+            margin-bottom: 40px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .step-content {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .step-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .screenshot {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .screenshot-caption {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #721c24;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #0c5460;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .file-structure pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+
+        .checklist .check-icon {
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+
+        .timeline-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .faq-section {
+            margin-top: 40px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: #f8f9fa;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-answer {
+            padding: 20px;
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .step-content {
+                padding: 20px;
+            }
+            
+            .nav-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Tutorial Download Data Instagram</h1>
+            <p>Panduan lengkap cara mengambil data followers dan following dalam format JSON</p>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn">
+                    <i class="fas fa-home"></i> Kembali ke Home
+                </a>
+                <a href="#faq" class="nav-btn">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> Informasi Penting</h4>
+                <p>Tutorial ini akan membantu Anda mengambil data Instagram dalam format JSON dari pusat akun Instagram. Data ini diperlukan untuk menggunakan Instagram Unfollowers Checker.</p>
+            </div>
+
+            <div class="step-container">
+                <div class="step-number">1</div>
+                <div class="step-title">Akses Pusat Akun Instagram</div>
+                <div class="step-content">
+                    <div class="step-description">
+                        Langkah pertama adalah mengakses pusat akun Instagram melalui browser web.
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h4><i class="fas fa-link"></i>Penting</h4>
+                        <p><strong>Pusat Akun Instagram:</strong></p>
+                        <a href="https://accountscenter.instagram.com/?theme=dark&entry_point=app_settings" 
+                           target="_blank"
+                           style="display: inline-block; background: #0095f6; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+                            <i class="fas fa-external-link-alt"></i> Buka Pusat Akun Instagram
+                        </a>
+                    </div>
+
+                    <div class="checklist">
+                        <li><i class="fas fa-check check-icon"></i> Buka browser web (Chrome, Firefox, Safari, atau Edge)</li>
+                        <li><i class="fas fa-check check-icon"></i> Pastikan Anda sudah login ke akun Instagram</li>
+                        <li><i class="fas fa-check check-icon"></i> Akses link pusat akun Instagram di atas</li>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-number">2</div>
+                <div class="step-title">Request Download Data</div>
+                <div class="step-content">
+                    <div class="step-description">
+                        Setelah masuk ke pusat akun, Anda perlu meminta download data Instagram Anda.
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Langkah 2.1:</strong> Scroll ke bawah halaman dan cari bagian "Data Download"
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Langkah 2.2:</strong> Klik tombol "Request Download" atau "Download Data"
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Langkah 2.3:</strong> Masukkan password Instagram Anda untuk konfirmasi
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Langkah 2.4:</strong> Klik "Request Download" untuk memulai proses
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4><i class="fas fa-clock"></i> Waktu Proses</h4>
+                        <p>Proses download data Instagram membutuhkan waktu 24-48 jam. Instagram akan mengirim email notifikasi ketika data siap untuk didownload.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-number">3</div>
+                <div class="step-title">Download File ZIP</div>
+                <div class="step-content">
+                    <div class="step-description">
+                        Setelah menerima email notifikasi, Anda bisa mendownload file ZIP yang berisi data Instagram Anda.
+                    </div>
+
+                    <div class="checklist">
+                        <li><i class="fas fa-check check-icon"></i> Cek email yang terdaftar di Instagram</li>
+                        <li><i class="fas fa-check check-icon"></i> Buka email dari Instagram dengan subjek "Your Instagram data is ready"</li>
+                        <li><i class="fas fa-check check-icon"></i> Klik link download yang ada di email</li>
+                        <li><i class="fas fa-check check-icon"></i> Masukkan password Instagram untuk mengakses file</li>
+                        <li><i class="fas fa-check check-icon"></i> Download file ZIP ke komputer Anda</li>
+                    </div>
+
+                    <div class="info-box">
+                        <h4><i class="fas fa-file-archive"></i> Struktur File ZIP</h4>
+                        <p>File ZIP akan berisi folder-folder dengan data Instagram Anda, termasuk:</p>
+                        <div class="file-structure">
+<pre>instagram-data/
+├── followers_1.json
+├── following.json
+├── comments.json
+├── likes.json
+├── messages.json
+└── ... (file lainnya)</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-number">4</div>
+                <div class="step-title">Ekstrak File JSON</div>
+                <div class="step-content">
+                    <div class="step-description">
+                        Setelah download selesai, ekstrak file ZIP dan cari file JSON yang diperlukan.
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4><i class="fas fa-file-code"></i> File yang Diperlukan</h4>
+                        <p>Untuk Instagram Unfollowers Checker, Anda hanya memerlukan 2 file:</p>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li><strong>followers_1.json</strong> - Daftar akun yang mengikuti Anda</li>
+                            <li><strong>following.json</strong> - Daftar akun yang Anda ikuti</li>
+                        </ul>
+                    </div>
+
+                    <div class="checklist">
+                        <li><i class="fas fa-check check-icon"></i> Extract file ZIP menggunakan WinRAR, 7-Zip, atau extractor bawaan OS</li>
+                        <li><i class="fas fa-check check-icon"></i> Buka folder hasil extract</li>
+                        <li><i class="fas fa-check check-icon"></i> Cari file "followers_1.json" dan "following.json"</li>
+                        <li><i class="fas fa-check check-icon"></i> Copy kedua file ke folder yang sama dengan website</li>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-number">5</div>
+                <div class="step-title">Gunakan Instagram Unfollowers Checker</div>
+                <div class="step-content">
+                    <div class="step-description">
+                        Setelah file JSON siap, Anda bisa menggunakan website Instagram Unfollowers Checker.
+                    </div>
+
+                    <div class="checklist">
+                        <li><i class="fas fa-check check-icon"></i> Buka file index.html di browser</li>
+                        <li><i class="fas fa-check check-icon"></i> Upload file followers_1.json dan following.json</li>
+                        <li><i class="fas fa-check check-icon"></i> Klik "Analisis Unfollowers"</li>
+                        <li><i class="fas fa-check check-icon"></i> Lihat hasil analisis dan download jika diperlukan</li>
+                    </div>
+
+                    <div class="info-box">
+                        <h4><i class="fas fa-shield-alt"></i> Keamanan Data</h4>
+                        <p>Website ini memproses data di browser Anda sendiri. Data tidak dikirim ke server manapun, sehingga privasi Anda tetap terjaga.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-section" id="faq">
+                <h2 style="margin-bottom: 30px; color: #333; text-align: center;">
+                    <i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan
+                </h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        Berapa lama waktu yang dibutuhkan untuk download data Instagram?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Proses download data Instagram membutuhkan waktu 24-48 jam. Instagram akan mengirim email notifikasi ketika data siap untuk didownload.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah ini aman?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yoi men aman karna tidak membutuhkan login pada instagram anda hanya membaca file json yang sudah di download pada instagram anda dan menganalisiis semua isi data followers dan following.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah data Instagram saya aman?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Ya, data Anda aman. Website ini memproses data di browser Anda sendiri (client-side). Data tidak dikirim ke server manapun, sehingga privasi Anda tetap terjaga.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        File JSON tidak ditemukan di folder extract, apa yang harus dilakukan?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Pastikan Anda sudah menunggu 24-48 jam setelah request download. Jika masih tidak ada, coba request ulang download data dari pusat akun Instagram.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah website ini bisa digunakan untuk akun private?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Ya, website ini bisa digunakan untuk akun private. Data yang diambil adalah data dari akun Anda sendiri, bukan dari akun lain.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        Apakah ada batasan jumlah followers/following?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Tidak ada batasan jumlah. Website ini bisa memproses data dengan jumlah followers/following berapapun, namun untuk jumlah yang sangat besar (>10.000) mungkin membutuhkan waktu lebih lama.
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="index.html" class="nav-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; font-size: 1.1rem;">
+                    <i class="fas fa-rocket"></i> Mulai Analisis Unfollowers
+                </a>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="contact-section" style="margin-top: 50px; background: #f8f9fa; border-radius: 15px; padding: 30px; text-align: center;">
+                <h2 style="color: #333; margin-bottom: 20px;">
+                    <i class="fab fa-whatsapp"></i> Butuh Bantuan?
+                </h2>
+                <p style="color: #666; margin-bottom: 25px; font-size: 1.1rem;">
+                    Jika Anda mengalami kendala atau memiliki pertanyaan, jangan ragu untuk menghubungi melalui WhatsApp
+                </p>
+                
+                <div class="contact-cards" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
+                    <div class="contact-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-width: 200px;">
+                        <div style="color: #25D366; font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h4 style="color: #333; margin-bottom: 10px;">Admin 1</h4>
+                        <p style="color: #666; margin-bottom: 15px;">Untuk pertanyaan umum dan bantuan teknis</p>
+                        <a href="https://wa.me/6281234567890?text=Halo admin, saya butuh bantuan untuk Instagram Unfollowers Checker" 
+                           target="_blank" 
+                           style="background: #25D366; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                            <i class="fab fa-whatsapp"></i> Chat WhatsApp
+                        </a>
+                    </div>
+                    
+                    <div class="contact-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-width: 200px;">
+                        <div style="color: #25D366; font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h4 style="color: #333; margin-bottom: 10px;">Admin 2</h4>
+                        <p style="color: #666; margin-bottom: 15px;">Untuk masalah khusus dan troubleshooting</p>
+                        <a href="https://wa.me/6289876543210?text=Halo admin, saya mengalami masalah dengan Instagram Unfollowers Checker" 
+                           target="_blank" 
+                           style="background: #25D366; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">
+                            <i class="fab fa-whatsapp"></i> Chat WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info" style="background: white; border-radius: 10px; padding: 20px; max-width: 600px; margin: 0 auto;">
+                    <h4 style="color: #333; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle"></i> Informasi Kontak
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: left;">
+                        <div>
+                            <strong style="color: #333;">Jam Operasional:</strong><br>
+                            <span style="color: #666;">Senin - Jumat: 09:00 - 17:00 WIB</span>
+                        </div>
+                        <div>
+                            <strong style="color: #333;">Response Time:</strong><br>
+                            <span style="color: #666;">Maksimal 2 jam dalam jam operasional</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="whatsapp-fixed" style="position: fixed; bottom: 100px; right: 30px; z-index: 1000;">
+                    <a href="https://wa.me/6281234567890?text=Halo admin, saya butuh bantuan untuk Instagram Unfollowers Checker" 
+                       target="_blank" 
+                       style="background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); transition: all 0.3s ease; font-size: 1.5rem;">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; margin-top: 30px;">
+            <p style="margin: 0; font-size: 1rem; opacity: 0.9;">
+                <i class="fas fa-code"></i> Develop by <strong>Tpk</strong>
+            </p>
+        </div>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                answer.classList.add('active');
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        // Back to Top Button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+    
+    <script src="config.js"></script>
+</body>
+</html> 
